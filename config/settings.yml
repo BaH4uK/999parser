@@ -1,0 +1,9 @@
+runner:
+  start: 140
+  end: 160
+  domain: "http://999.md"
+
+mailer:
+  from: "offer@999.md"
+  to:
+    1: "nyku.rn@gmail.com"
