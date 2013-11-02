@@ -1,10 +1,12 @@
 require 'rubygems'
 require 'open-uri'
 require 'nokogiri'
-require 'watir-webdriver'
-require 'headless'
 require 'yaml'
 require 'redis'
+require 'watir'
+require 'headless'
+require 'selenium-webdriver'
+
 require_relative 'mailer'
 
 class Runner
@@ -18,16 +20,17 @@ class Runner
     def start
       headless = Headless.new
       headless.start
-      browser = Watir::Browser.new :firefox
+
+      browser = Watir::Browser.new
       browser.goto URL
       page = Nokogiri::HTML(browser.html)
       browser.close
-      parse_offers page
       headless.destroy
+      parse_offers page
     end
 
     def parse_offers page
-      page.css("ul.m-short li").each do |offer|
+      page.css("ul#m__ads-list li").each do |offer|
         title = offer.css(".adsPage__list__title").text.strip
         href  = "#{DOMAIN}/#!/#{offer['data-id']}"
         date  = offer.css(".adsPage__list__date").text.strip
@@ -38,11 +41,12 @@ class Runner
 
     def check_details title, href, date, price
       if price != "" && date.match("#{Time.now.day} ноя") && offer_is_unique(title, href, date, price)
-       	headless = Headless.new
-       	headless.start
+        headless = Headless.new
+        headless.start
 
-  	    browser = Watir::Browser.new :firefox
+        browser = Watir::Browser.new
         browser.goto href
+
         details = Nokogiri::HTML(browser.html).css("#m__ad-placeholder").to_html
 
         browser.close
