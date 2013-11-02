@@ -29,28 +29,28 @@ class Runner
     def parse_offers page
       page.css("ul.m-short li").each do |offer|
         title = offer.css(".adsPage__list__title").text.strip
-	puts "TITLE: #{title}"
         href  = "#{DOMAIN}/#!/#{offer['data-id']}"
-	puts "HREF: #{href}"
         date  = offer.css(".adsPage__list__date").text.strip
-	puts "DATE: #{date}"
         price = offer.css(".adsPage__list__feature-price").text.strip
-	puts "PRICE: #{price}"
         check_details(title, href, date, price)
       end
     end
 
     def check_details title, href, date, price
       if price != "" && date.match("#{Time.now.day} ноя") && offer_is_unique(title, href, date, price)
-     	headless = Headless.new
-     	headless.start
-      
-	browser = Watir::Browser.new :firefox
+       	headless = Headless.new
+       	headless.start
+
+  	    browser = Watir::Browser.new :firefox
         browser.goto href
         details = Nokogiri::HTML(browser.html).css("#m__ad-placeholder").to_html
+
         browser.close
-        headless.destroy      
-        Mailer.offer(CONFIG["mailer"]["from"], CONFIG["mailer"]["to"], "#{price} - #{title}", "#{details} <a href='#{href}'>Link</a>").deliver
+        headless.destroy
+
+        if details.include?("adPage__content__photos grid_18")
+          Mailer.offer(CONFIG["mailer"]["from"], CONFIG["mailer"]["to"], "#{price} - #{title}", "#{details} <a href='#{href}'>Link</a>").deliver
+        end
       end
     end
 
