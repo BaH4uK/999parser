@@ -7,8 +7,8 @@ ActionMailer::Base.smtp_settings = {
    :port           => 587,
    :domain         => "domain.com.ar",
    :authentication => :plain,
-   :user_name      => "user@gmail.com",
-   :password       => "password",
+   :user_name      => "",
+   :password       => "",
    :enable_starttls_auto => true
   }
 ActionMailer::Base.view_paths= File.dirname(__FILE__)

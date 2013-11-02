@@ -12,15 +12,14 @@ class Runner
     ISTART  = CONFIG["runner"]["start"]
     IEND    = CONFIG["runner"]["end"]
     DOMAIN  = CONFIG["runner"]["domain"]
-    URL     = "#{DOMAIN}/#list/real-estate/apartments-and-rooms/1:912/2:#{ISTART}-#{IEND}/7:35/9:6039" #/241:893
+    URL     = "#{DOMAIN}/#list/real-estate/apartments-and-rooms/1:912/2:#{ISTART}-#{IEND}/7:35/9:6037,6039,6040,4829"
 
     def start
       browser = Watir::Browser.new :phantomjs
       browser.goto URL
-      parse_offers Nokogiri::HTML(browser.html)
+      page = Nokogiri::HTML(browser.html)
       browser.close
-      log     = Logger.new("logger.log")
-      log.info("Script started #{Time.now}")
+      parse_offers page
     end
 
     def parse_offers page
@@ -38,8 +37,8 @@ class Runner
         browser = Watir::Browser.new :phantomjs
         browser.goto href
         details = Nokogiri::HTML(browser.html).css("#m__ad-placeholder").to_html
-        Mailer.offer(CONFIG["mailer"]["from"], CONFIG["mailer"]["to"], "#{price} - #{title}", details).deliver
         browser.close
+        Mailer.offer(CONFIG["mailer"]["from"], CONFIG["mailer"]["to"], "#{price} - #{title}", "#{details} <a href='#{href}'>Link</a>").deliver
       end
     end
 
