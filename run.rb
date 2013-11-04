@@ -40,7 +40,7 @@ class Runner
     end
 
     def check_details title, href, date, price
-      if price != "" && date.match("#{Time.now.day} ноя") && offer_is_unique(title, href, date, price)
+      if price != "" && date.match("ноя") && offer_is_unique(title, href, date, price)
         headless = Headless.new
         headless.start
 
@@ -51,9 +51,8 @@ class Runner
 
         browser.close
         headless.destroy
-
         if details.include?("adPage__content__photos grid_18")
-          Mailer.offer(CONFIG["mailer"]["from"], CONFIG["mailer"]["to"], "#{price} - #{title}", "#{details} <a href='#{href}'>Link</a>").deliver
+          Mailer.offer(CONFIG["mailer"]["from"], CONFIG["mailer"]["to"], "[999.md] #{price} - #{title}", "#{details} <a href='#{href}'>Link</a>").deliver
         end
       end
     end

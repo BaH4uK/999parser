@@ -1,10 +1,10 @@
 runner:
-  start: 140
-  end: 250
+  start: 130
+  end: 230
   domain: "http://999.md"
 
 mailer:
   from: "offer@999.md"
   to:
-    1: "bah4uk@gmail.com"
+    1: "danci.ivan@gmail.com"
     2: "euhenia.moroz@gmail.com"
